@@ -3,11 +3,13 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
+const _ = require("lodash");
 
-const homeStartingContent = "Lacus vel facilisis volutpat est velit egestas dui id ornare. Semper auctor neque vitae tempus quam. Sit amet cursus sit amet dictum sit amet justo. Viverra tellus in hac habitasse. Imperdiet proin fermentum leo vel orci porta. Donec ultrices tincidunt arcu non sodales neque sodales ut. Mattis molestie a iaculis at erat pellentesque adipiscing. Magnis dis parturient montes nascetur ridiculus mus mauris vitae ultricies. Adipiscing elit ut aliquam purus sit amet luctus venenatis lectus. Ultrices vitae auctor eu augue ut lectus arcu bibendum at. Odio euismod lacinia at quis risus sed vulputate odio ut. Cursus mattis molestie a iaculis at erat pellentesque adipiscing.";
-const aboutContent = "Hac habitasse platea dictumst vestibulum rhoncus est pellentesque. Dictumst vestibulum rhoncus est pellentesque elit ullamcorper. Non diam phasellus vestibulum lorem sed. Platea dictumst quisque sagittis purus sit. Egestas sed sed risus pretium quam vulputate dignissim suspendisse. Mauris in aliquam sem fringilla. Semper risus in hendrerit gravida rutrum quisque non tellus orci. Amet massa vitae tortor condimentum lacinia quis vel eros. Enim ut tellus elementum sagittis vitae. Mauris ultrices eros in cursus turpis massa tincidunt dui.";
+const homeStartingContent = "Welcome! This is a blog site made using EJS, Express and NodeJS with other packages like lodash,body-parser,etc, you can compose your blogs which get added to the home page and can click through all the blogs. The use of routing is done quite well in this project. A bit of bootstrap is used too!"
 const contactContent = "Scelerisque eleifend donec pretium vulputate sapien. Rhoncus urna neque viverra justo nec ultrices. Arcu dui vivamus arcu felis bibendum. Consectetur adipiscing elit duis tristique. Risus viverra adipiscing at in tellus integer feugiat. Sapien nec sagittis aliquam malesuada bibendum arcu vitae. Consequat interdum varius sit amet mattis. Iaculis nunc sed augue lacus. Interdum posuere lorem ipsum dolor sit amet consectetur adipiscing elit. Pulvinar elementum integer enim neque. Ultrices gravida dictum fusce ut placerat orci nulla. Mauris in aliquam sem fringilla ut morbi tincidunt. Tortor posuere ac ut consequat semper viverra nam libero.";
-
+const aboutContent = "about this site will add soon hehe";
+const a1 ="Today was an incredible day of exploration. I visited the historic city with its ancient architecture and fascinating landmarks. The narrow cobblestone streets were filled with the charm of the past. I walked through the bustling marketplaces, tasting local delicacies and soaking in the vibrant atmosphere. The grand cathedral left me in awe with its intricate details and stained glass windows. As the day came to an end, I found myself reflecting on the rich history and stories that this city holds. It was an enriching experience that I will cherish forever";
+const a2 = "Today was a day of tranquility and serenity. I ventured into the heart of nature, exploring lush green forests and crystal-clear streams. The chirping of birds and the rustling of leaves provided a soothing soundtrack. I hiked up a picturesque trail that led to a breathtaking viewpoint, offering panoramic vistas of the surrounding landscapes. The air was fresh and invigorating, revitalizing my spirit. Nature has a way of reminding us of its beauty and the importance of preserving it. I returned to my cozy cabin, feeling rejuvenated and grateful for the wonders of the natural world.";
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -15,7 +17,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
-var posts = [];
+var posts = [{title:"Exploring the Historic City", content:a1},{title:"A Nature Retreat",content:a2}];
 
 app.get("/",(req,res)=>{
   res.render('home',{home: homeStartingContent, pos:posts});
@@ -39,7 +41,23 @@ app.post("/compose",(req,res)=>{
     content: req.body.post
   }
   posts.push(post);
-  console.log(posts);
+  // console.log(posts);
+
+  res.redirect("/");
+})
+
+app.get("/posts/:title",(req,res)=>{
+  console.log(req.params.title);
+  // const postNames = posts.map(post => post.title.toLowerCase())
+  posts.forEach((p)=>{
+    if(p.title.toLowerCase() == _.lowerCase(req.params.title)){
+      // console.log("match");
+      res.render('post',{
+        title: p.title,
+        content: p.content
+      });
+    }
+  })
 
   res.redirect("/");
 })
