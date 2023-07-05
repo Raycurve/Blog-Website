@@ -48,3 +48,25 @@
 #com{
   display: flex;
 }
+.wrap{
+  display: flex;
+}
+.left{
+  /* background-color: powderblue; */
+  width: 40vw;
+  height: 30vh;
+  font-family: 'Montserrat', sans-serif;
+  /* font-family: 'Roboto', sans-serif; */
+}
+.right{
+  /* background-color: #13FFFF; */
+  width: 40vw;
+  height: 30vh;
+}
+.right>img{
+  margin-inline: 39%;
+  margin-top: -64px;
+  position: relative;
+  height: 68vh;
+
+}
