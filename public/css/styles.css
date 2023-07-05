@@ -33,3 +33,18 @@
 	font-size: 12px;
   color: #fff;
 }
+
+.comimg>img{
+  display: flex;
+  height: 25px;
+  width: 25px;
+  margin: -1px 0px 0px -27px;
+  /* margin: 14px 0px 10px 0px; */
+}
+.comimg{
+  padding: 0;
+  /* margin-right: -10px; */
+}
+#com{
+  display: flex;
+}

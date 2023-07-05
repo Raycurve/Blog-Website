@@ -10,7 +10,7 @@
     <p><%= home %></p>
     <% pos.forEach((e)=>{ %>
       <h1><%=  e.title %></h1>
-      <p><%=  e.content.substring(0,100) %>...</p>
+      <p><%=  e.content.substring(0,150) %>...</p>
       <a href='/posts/<%=  e.title %>' >Read More</a>
     <% })%>
     <!-- <% for( var i = 0 ; i<pos.length ;i++){ %>
