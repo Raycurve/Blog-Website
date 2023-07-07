@@ -126,10 +126,13 @@
   --s: #0005;
   transition: none;
 }
-.link{
-  color: #1abc9c;
-}
+
 .link:hover{
   color: white;
+  text-decoration: none;
+}
+.link,
+.link:active{
+  color: #1abc9c;
   text-decoration: none;
 }
