@@ -4,6 +4,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const _ = require("lodash");
+const mongoose = require('mongoose');
+
 
 const homeStartingContent = "Welcome! This is a blog site made using EJS, Express and NodeJS with other packages like lodash,body-parser,etc, you can compose your blogs which get added to the home page and can click through all the blogs. The use of routing is done quite well in this project. A bit of bootstrap is used too!"
 const contactContent = "Scelerisque eleifend donec pretium vulputate sapien. Rhoncus urna neque viverra justo nec ultrices. Arcu dui vivamus arcu felis bibendum. Consectetur adipiscing elit duis tristique. Risus viverra adipiscing at in tellus integer feugiat. Sapien nec sagittis aliquam malesuada bibendum arcu vitae. Consequat interdum varius sit amet mattis. Iaculis nunc sed augue lacus. Interdum posuere lorem ipsum dolor sit amet consectetur adipiscing elit. Pulvinar elementum integer enim neque. Ultrices gravida dictum fusce ut placerat orci nulla. Mauris in aliquam sem fringilla ut morbi tincidunt. Tortor posuere ac ut consequat semper viverra nam libero.";
@@ -17,10 +19,47 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
-var posts = [{title:"Exploring the Historic City", content:a1},{title:"A Nature Retreat",content:a2}];
+
+mongoose.connect('mongodb://127.0.0.1:27017/BlogDB');
+
+const postSchema = new mongoose.Schema({
+  title: String,
+  content: String
+})
+
+const Post = mongoose.model("posts", postSchema);
+
+
+
+
+// var posts = [{title:"Exploring the Historic City", content:a1},{title:"A Nature Retreat",content:a2}];
 
 app.get("/",(req,res)=>{
-  res.render('home',{home: homeStartingContent, pos:posts});
+  Post.find({}).then((posts)=>{
+    // console.log(posts);
+    if(posts.length == 0){
+      const day1 = new Post({
+        title:"Exploring the Historic City",
+        content:a1
+      })
+
+      const day2 = new Post({
+        title:"A Nature Retreat",
+        content: a2
+      })
+      day1.save()
+      .then(
+        day2.save()
+        .then(()=>{
+          console.log("saved");
+          res.redirect("/");
+        })
+      );
+    }
+    else{
+      res.render('home',{home: homeStartingContent, pos:posts});
+    }
+  })
 })
 
 app.get("/about",(req,res)=>{
@@ -32,30 +71,45 @@ app.get("/compose",(req,res)=>{
 })
 
 app.post("/compose",(req,res)=>{
-  const post = {
+  const post = new Post({
     title: req.body.title,
     content: req.body.post
-  }
-  posts.push(post);
+  });
+  post.save()
+  .then(()=>{
+    res.redirect("/");
+  })
+  // posts.push(post);
   // console.log(posts);
 
-  res.redirect("/");
 })
 
 app.get("/posts/:title",(req,res)=>{
   console.log(req.params.title);
   // const postNames = posts.map(post => post.title.toLowerCase())
-  posts.forEach((p)=>{
-    if(p.title.toLowerCase() == _.lowerCase(req.params.title)){
-      // console.log("match");
-      res.render('post',{
-        title: p.title,
-        content: p.content
-      });
+
+  Post.findOne({title:{ $regex: req.params.title, $options: "i" }})
+  .then((post)=>{
+    if(post){
+      res.render('post',{title: post.title, content : post.content});
+    }
+    else{
+      console.log("not found");
+      res.redirect("/");
     }
   })
+  //
+  // posts.forEach((p)=>{
+  //   if(p.title.toLowerCase() == _.lowerCase(req.params.title)){
+  //     // console.log("match");
+  //     res.render('post',{
+  //       title: p.title,
+  //       content: p.content
+  //     });
+  //   }
+  // }
+// )
 
-  res.redirect("/");
 })
 
 
